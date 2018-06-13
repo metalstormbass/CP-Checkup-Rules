@@ -1,1 +1,30 @@
-config_system -s "hostname=security_checkup&ipaddr_v4=192.2.0.254&masklen_v4=24&primary=8.8.8.8&mgmt_admin_passwd=vpn123&timezone='America/Edmonton'&install_security_gw=true&gateway_daip=false&install_ppak=true&install_security_management=true&gateway_cluster_member=false&install_security_managment=true&mgmt_admin_name=adminIP&mgmt_gui_clients_radio=any&ftw_sic_key=vpn123" 
+# Mandatory parameters - change the values specific to your setup
+hostname=Security_Gateway
+mgmt_admin_name=admin
+mgmt_admin_passwd=vpn123
+mgmt_gui_clients_radio=any
+
+# Mandatory parameters - do not change
+install_security_managment="true"
+install_security_gw="true"
+install_mgmt_primary="true"
+install_mgmt_secondary="false"
+
+# Optional parameters - recommended - sk94508 + sk94509 
+download_info="true"
+upload_info="true"
+
+# Optional parameters - uncomment the required field and fill the value
+# Domain name
+# domainname=
+
+# DNS
+ primary=8.8.8.8
+# secondary=
+# tertiary=
+
+# Time zone
+# timezone='America/Edmonton'
+
+# Hash of the password of user 'admin' used for access to CLI and WebUI
+# admin_hash=''

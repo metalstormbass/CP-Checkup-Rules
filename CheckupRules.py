@@ -23,6 +23,7 @@ ssh.connect (ip_address, username=username, password=password)
 rc = ssh.invoke_shell()
 
 
+'''Pronpt User to check blades'''
 
 #Login to management API
 rc.send("mgmt login ")
@@ -34,28 +35,43 @@ time.sleep(1)
 
 '''Check to see if Management API is Enabled'''
 
-#Create Rule
+#Create FW_Layer and Rule
 rc.send("lock database override")
 rc.send("\n")
-rc.send('mgmt_cli add package name "security_checkup" threat-prevention "false"')
+rc.send('mgmt_cli add access-layer name FW_Layer firewall true')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli add access-layer name "FW_Layer"  firewall "true" add-default-rule "false" shared "true"')
+rc.send('mgmt_cli add access-rule layer FW_Layer position 1 name Accept_All action Accept destination Any source Any enabled true track none')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli set package name "security_checkup" access-layers.add.1.name "FW_Layer" access-layers.add.1.position 1')
+rc.send('mgmt_cli delete access-rule name "Cleanup rule" layer FW_Layer')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli add access-rule layer "FW_Layer" source "any" destination "any" service "any" action "accept" position "1" name "Accept All"')
+
+#Create APP&URLF Layer and Rule
+rc.send("mgmt_cli add access-layer name APP&URLF applications-and-url-filtering true firewall false")
 rc.send("\n")
 time.sleep(2)
+rc.send('mgmt_cli add access-rule layer APP&URLF position 1 name Content_Logging action Accept source Any destination Internet data "Any File" data-direction up track "detailed log" enabled true')
+rc.send("\n")
+time.sleep(2)
+rc.send('mgmt_cli add access-rule layer APP&URLF position 2 name APPLC_Logging action Accept source Any destination Internet track "detailed log" enabled true')
+rc.send("\n")
+time.sleep(2)
+rc.send('mgmt_cli set package name Standard access-layers.add.1.name "APP&URLF" access-layers.add.1.position 2')
+rc.send("\n")
+time.sleep(2)
+rc.send('mgmt_cli delete access-rule name "Cleanup rule" layer APP&URLF')
+rc.send("\n") 
+time.sleep(2)
+        
 
 #Publish Rules
 rc.send('mgmt_cli publish')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli install-policy policy-package "security_checkup"')
+rc.send('mgmt_cli install-policy policy-package "Standard"')
 rc.send("\n")
 
-results = rc.recv(4000)
+results = rc.recv(8000)
 print results
