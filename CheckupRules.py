@@ -1,12 +1,6 @@
 import getpass
-import pip
 import time
-
-#Check if Paramiko is installed and install it if not.
-try:
-    import paramiko
-except: 
-    pip.main(['install', paramiko])
+import paramiko
     
 #Get Variables
 ip_address = raw_input("Enter Management IP: ")
