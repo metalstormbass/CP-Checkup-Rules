@@ -23,7 +23,7 @@ ssh.connect (ip_address, username=username, password=password)
 rc = ssh.invoke_shell()
 
 
-'''Pronpt User to check blades'''
+'''Prompt User to check blades'''
 
 #Login to management API
 rc.send("mgmt login ")
@@ -31,13 +31,14 @@ rc.send("\n")
 time.sleep(1)
 rc.send(password)
 rc.send("\n")
-time.sleep(1)
+time.sleep(2)
 
 '''Check to see if Management API is Enabled'''
 
 #Create FW_Layer and Rule
 rc.send("lock database override")
 rc.send("\n")
+time.sleep(2)
 rc.send('mgmt_cli add access-layer name FW_Layer firewall true')
 rc.send("\n")
 time.sleep(2)
@@ -67,11 +68,20 @@ time.sleep(2)
         
 
 #Publish Rules
-rc.send('mgmt_cli publish')
-rc.send("\n")
-time.sleep(2)
-rc.send('mgmt_cli install-policy policy-package "Standard"')
-rc.send("\n")
+stdin, stdout, stderr = rc.exec_command('mgmt_cli publish')
+exit_status = stdout.channel.recv_exit_status()
+if exit_status == 0:
+    print ("Policy Published")
+else:
+    print("Error", exit_status)
+stdin, stdout, stderr = rc.exec_command('mgmt_cli install-policy policy-package "Standard"')
+exit_status = stdout.channel.recv_exit_status()
+if exit_status == 0:
+    print ("Policy Installed")
+else:
+    print("Error", exit_status)
 
+rc.send('logout"')
+rc.send("\n")
 results = rc.recv(8000)
 print results
