@@ -60,6 +60,8 @@ replace_line('first.conf', 171, "primary=" + dns_IP  + "\n")
 #Establish Serial Connection
 ser = serial.Serial(serial_port, 9600)
 
+#USE SUBPROCESS TO CAT FIRST.CONF AND ASSIGN TO VARIABLE
+
 #Login
 ser.write("admin")
 ser.write("\n")
