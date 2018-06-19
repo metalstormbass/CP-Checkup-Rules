@@ -30,16 +30,16 @@ while True:
     else:
         print "Problem Occured. Please re-enter your password.\n"
 
-print "Enter desired SIC Key"
-sic_key = getpass.getpass()
+#print "Enter desired SIC Key"
+#sic_key = getpass.getpass()
 
 dns_IP = raw_input ("Enter Desired DNS Server(Optional - Default is 8.8.8.8): ")
 if dns_IP is "":
 	dns_IP = "8.8.8.8"
 
 replace_line('firstconfig.conf', 73, 'mgmt_admin_passwd=' + password + "\n")
-replace_line('firstconfig.conf', 101, 'ftw_sic_key=' + sic_key  + "\n")
-replace_line('firstconfig.conf', 140, "management_IP=" + management_IP  + "\n")
+#replace_line('firstconfig.conf', 101, 'ftw_sic_key=' + sic_key  + "\n")
+replace_line('firstconfig.conf', 140, "ipaddr_v4=" + management_IP  + "\n")
 replace_line('firstconfig.conf', 150, "hostname=" + hostname  + "\n")
 replace_line('firstconfig.conf', 171, "primary=" + dns_IP  + "\n")
 
