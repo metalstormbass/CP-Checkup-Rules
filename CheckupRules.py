@@ -62,19 +62,12 @@ time.sleep(2)
         
 
 #Publish Rules
-stdin, stdout, stderr = rc.exec_command('mgmt_cli publish')
-exit_status = stdout.channel.recv_exit_status()
-if exit_status == 0:
-    print ("Policy Published")
-else:
-    print("Error", exit_status)
-stdin, stdout, stderr = rc.exec_command('mgmt_cli install-policy policy-package "Standard"')
-exit_status = stdout.channel.recv_exit_status()
-if exit_status == 0:
-    print ("Policy Installed")
-else:
-    print("Error", exit_status)
-
+rc.send('mgmt_cli publish')
+rc.send("\n")
+time.sleep(2)
+rc.send('mgmt_cli install-policy policy-package "Standard"')
+rc.send("\n")
+time.sleep(2)
 rc.send('logout"')
 rc.send("\n")
 results = rc.recv(8000)
