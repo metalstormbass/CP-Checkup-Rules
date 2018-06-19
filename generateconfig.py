@@ -39,7 +39,7 @@ if dns_IP is "":
 
 replace_line('firstconfig.conf', 73, 'mgmt_admin_passwd=' + password + "\n")
 replace_line('firstconfig.conf', 101, 'ftw_sic_key=' + sic_key  + "\n")
-replace_line('firstconfig.conf', 140, "management_IP='" + management_IP  + "'\n")
+replace_line('firstconfig.conf', 140, "management_IP=" + management_IP  + "\n")
 replace_line('firstconfig.conf', 150, "hostname=" + hostname  + "\n")
 replace_line('firstconfig.conf', 171, "primary=" + dns_IP  + "\n")
 
@@ -51,7 +51,7 @@ ser = serial.Serial(serial_port, 9600)
 ser.write("admin")
 ser.write("\n")
 time.sleep(2)
-ser.write(password)
+ser.write("admin")
 ser.write("\n")
 time.sleep(2)
 
@@ -96,6 +96,7 @@ while line:
     ser.write('echo "' + line + '" >> ./firstconfig.conf')
     ser.write("\n")
     time.sleep(1)
+    line = f.readline()
     print num
     num = num + 1
 f.close()
@@ -105,3 +106,4 @@ ser.write("config_system -f ./firstconfig.conf")
 ser.write("\n")
 time.sleep(1)
 ser.close()
+print "First Time Wizard Running. Serial Connection Disconnected"
