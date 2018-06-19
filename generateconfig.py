@@ -1,5 +1,7 @@
 import getpass
 from passlib.hash import md5_crypt
+import serial
+import time
 
 #Methods
 def replace_line(file_name, line_num, text):
@@ -10,15 +12,23 @@ def replace_line(file_name, line_num, text):
     out.close()
 
 #Get Variables
+
+serial_port = raw_input("Enter COM Port (Ex: COM5): ")
+
 hostname = raw_input("Enter desired Hostname: ")
 
 management_IP = raw_input("Enter desired Management IP: ")
 
-print "Enter desired GAIA password"
-password = getpass.getpass()
-print "Enter desired GAIA password again"
-password2 = getpass.getpass()
-if 
+while True:
+
+    print "Enter desired GAIA password"
+    password = getpass.getpass()
+    print "Enter desired GAIA password again"
+    password2 = getpass.getpass()
+    if password == password2:
+        break
+    else:
+        print "Problem Occured. Please re-enter your password.\n"
 
 print "Enter desired SIC Key"
 sic_key = getpass.getpass()
@@ -26,15 +36,72 @@ sic_key = getpass.getpass()
 dns_IP = raw_input ("Enter Desired DNS Server(Optional - Default is 8.8.8.8): ")
 if dns_IP is "":
 	dns_IP = "8.8.8.8"
-    
-#Generate Admin Password Hash
-hash = md5_crypt.encrypt(password)
-
-
 
 replace_line('firstconfig.conf', 73, 'mgmt_admin_passwd=' + password + "\n")
 replace_line('firstconfig.conf', 101, 'ftw_sic_key=' + sic_key  + "\n")
-replace_line('firstconfig.conf', 121, "admin_hash='" + hash  + "'\n")
-replace_line('firstconfig.conf', 140, "management_IP='" + hash  + "'\n")
+replace_line('firstconfig.conf', 140, "management_IP='" + management_IP  + "'\n")
 replace_line('firstconfig.conf', 150, "hostname=" + hostname  + "\n")
 replace_line('firstconfig.conf', 171, "primary=" + dns_IP  + "\n")
+
+
+#Establish Serial Connection
+ser = serial.Serial(serial_port, 9600)
+
+#Login
+ser.write("admin")
+ser.write("\n")
+time.sleep(2)
+ser.write(password)
+ser.write("\n")
+time.sleep(2)
+
+#Change Password
+ser.write("set selfpasswd")
+ser.write("\n")
+time.sleep(1)
+ser.write("admin")
+ser.write("\n")
+time.sleep(1)
+ser.write(password)
+ser.write("\n")
+time.sleep(1)
+ser.write(password)
+ser.write("\n")
+time.sleep(1)
+
+#Set Expert Password
+ser.write("set expert-password")
+ser.write("\n")
+time.sleep(1)
+ser.write(password)
+ser.write("\n")
+time.sleep(1)
+ser.write(password)
+ser.write("\n")
+time.sleep(1)
+
+#Expert
+ser.write("expert")
+ser.write("\n")
+time.sleep(2)
+ser.write(password)
+ser.write("\n")
+time.sleep(2)
+
+#Create Configuration File and Run
+f = open('firstconfig.conf', "r")
+line = f.readline()
+num = 1
+while line:
+    ser.write('echo "' + line + '" >> ./firstconfig.conf')
+    ser.write("\n")
+    time.sleep(1)
+    print num
+    num = num + 1
+f.close()
+
+
+ser.write("config_system -f ./firstconfig.conf")
+ser.write("\n")
+time.sleep(1)
+ser.close()
