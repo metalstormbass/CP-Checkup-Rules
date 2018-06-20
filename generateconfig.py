@@ -1,5 +1,4 @@
 import getpass
-from passlib.hash import md5_crypt
 import serial
 import time
 
@@ -35,7 +34,6 @@ if dns_IP is "":
 	dns_IP = "8.8.8.8"
 
 replace_line('firstconfig.conf', 73, 'mgmt_admin_passwd=' + password + "\n")
-
 replace_line('firstconfig.conf', 140, "ipaddr_v4=" + management_IP  + "\n")
 replace_line('firstconfig.conf', 150, "hostname=" + hostname  + "\n")
 replace_line('firstconfig.conf', 171, "primary=" + dns_IP  + "\n")
@@ -103,4 +101,10 @@ ser.write("config_system -f ./firstconfig.conf")
 ser.write("\n")
 time.sleep(1)
 ser.close()
+
+replace_line('firstconfig.conf', 73, "")
+replace_line('firstconfig.conf', 140, "")
+replace_line('firstconfig.conf', 150, "")
+replace_line('firstconfig.conf', 171, "")
+
 print "First Time Wizard Running. Serial Connection Disconnected"
