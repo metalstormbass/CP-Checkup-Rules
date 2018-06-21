@@ -29,43 +29,44 @@ time.sleep(2)
 
 rc.send("mgmt_cli login -r true session-name PyConfig ")
 rc.send("\n")
-time.sleep(1)
-rc.send(password)
-rc.send("\n")
-time.sleep(2)
+time.sleep(3)
 
 
 '''Check to see if Management API is Enabled'''
+#Delete Default Network Layer
+rc.send('mgmt_cli -r true delete access-layer name "Network"')
+rc.send("\n")
+time.sleep(2)
 
 #Create FW_Layer and Rule
-rc.send("lock database override")
-rc.send("\n")
-
 time.sleep(2)
-rc.send('mgmt_cli -r true add access-layer name FW_Layer firewall true ')
+rc.send('mgmt_cli -r true add access-layer name "FW_Layer" firewall true ')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli -r true  add access-rule layer FW_Layer position 1 name Accept_All action Accept destination Any source Any enabled true track none')
+rc.send('mgmt_cli -r true  add access-rule layer "FW_Layer" position 1 name Accept_All action Accept destination Any source Any enabled true track none')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli -r true delete access-rule name "Cleanup rule" layer FW_Layer ')
+rc.send('mgmt_cli -r true delete access-rule name "Cleanup rule" layer "FW_Layer" ')
+rc.send("\n")
+time.sleep(2)
+rc.send('mgmt_cli -r true set package name Standard access-layers.add.1.name "FW_Layer" access-layers.add.1.position 1')
 rc.send("\n")
 time.sleep(2)
 
 #Create APP&URLF Layer and Rule
-rc.send("mgmt_cli -r true add access-layer name APP&URLF applications-and-url-filtering true firewall false ")
+rc.send('mgmt_cli -r true add access-layer name "APP&URLF" applications-and-url-filtering true content-awareness true firewall false')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli -r true add access-rule layer APP&URLF position 1 name Content_Logging action Accept source Any destination Internet data "Any File" data-direction up track "detailed log" enabled true ')
+rc.send('mgmt_cli -r true add access-rule layer "APP&URLF" position 1 name Content_Logging action Accept source Any destination Internet data "Any File" data-direction up track "detailed log" enabled true ')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli -r true add access-rule layer APP&URLF position 2 name APPLC_Logging action Accept source Any destination Internet track "detailed log" enabled true ')
+rc.send('mgmt_cli -r true add access-rule layer "APP&URLF" position 2 name APPLC_Logging action Accept source Any destination Internet track "detailed log" enabled true ')
 rc.send("\n")
 time.sleep(2)
 rc.send('mgmt_cli -r true set package name Standard access-layers.add.1.name "APP&URLF" access-layers.add.1.position 2')
 rc.send("\n")
 time.sleep(2)
-rc.send('mgmt_cli -r true delete access-rule name "Cleanup rule" layer APP&URLF')
+rc.send('mgmt_cli -r true delete access-rule name "Cleanup rule" layer "APP&URLF"')
 rc.send("\n")
 time.sleep(2)      
 
