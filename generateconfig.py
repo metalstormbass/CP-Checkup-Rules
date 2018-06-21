@@ -102,9 +102,9 @@ ser.write("\n")
 time.sleep(1)
 ser.close()
 
-replace_line('firstconfig.conf', 73, "")
-replace_line('firstconfig.conf', 140, "")
-replace_line('firstconfig.conf', 150, "")
-replace_line('firstconfig.conf', 171, "")
+replace_line('firstconfig.conf', 73, 'mgmt_admin_passwd=')
+replace_line('firstconfig.conf', 140, "ipaddr_v4=")
+replace_line('firstconfig.conf', 150, "hostname=")
+replace_line('firstconfig.conf', 171, "primary=")
 
 print "First Time Wizard Running. Serial Connection Disconnected"
