@@ -2,6 +2,13 @@ import getpass
 import serial
 import time
 
+#Method
+def replace_line(file_name, line_num, text):
+    lines = open(file_name, 'r').readlines()
+    lines[line_num] = text
+    out = open(file_name, 'w')
+    out.writelines(lines)
+    out.close()
 
 #Get Variables
 
@@ -26,14 +33,11 @@ dns_IP = raw_input ("Enter Desired DNS Server(Optional - Default is 8.8.8.8): ")
 if dns_IP is "":
 	dns_IP = "8.8.8.8"
     
-f = open('firstconfig.conf', "w+")
-f.write('mgmt_admin_passwd=' + password + "\n")
-f.write("ipaddr_v4=" + management_IP  + "\n")
-f.write("hostname=" + hostname  + "\n")
-f.write("primary=" + dns_IP  + "\n")
-f.close()   
-    
-
+replace_line('firstconfig.conf', 43, 'mgmt_admin_passwd=' + password + "\n")
+replace_line('firstconfig.conf', 44, "ipaddr_v4=" + management_IP  + "\n")
+replace_line('firstconfig.conf', 45, "hostname=" + hostname  + "\n")
+replace_line('firstconfig.conf', 46, "primary=" + dns_IP  + "\n")
+ 
 #Establish Serial Connection
 ser = serial.Serial(serial_port, 9600)
 
