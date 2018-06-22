@@ -28,10 +28,10 @@ rc.send("\n")
 rc.send('add dhcp client interface '+ client_interface)
 rc.send("\n")
 time.sleep(2)
-rc.send('set interface ' + monitor_interface + '  state on comments "This is for internet access"')
+rc.send('set interface ' + client_interface + '  state on comments "This is for internet access"')
 time.sleep(15)
 rc.send("\n")
-rc.send('set interface ' + monitor_interface + ' monitor-mode "SPAN Port"')
+rc.send('set interface ' + monitor_interface + ' monitor-mode comments "SPAN Port"')
 time.sleep(5)
 rc.send("\n")
 
@@ -107,7 +107,15 @@ rc.send("\n")
 time.sleep(10)
 rc.send('mgmt_cli -r true set access-rule name "Cleanup rule" layer "APP&URLF" action Accept destination Any source Any enabled true track none --format json ignore-warnings true')
 rc.send("\n")
-time.sleep(10)      
+time.sleep(10)
+#Advanced Settings
+rc.send('''app_obj=$(psql_client cpm postgres -c "select d1.objid, d2.name from dleobjectderef_data d1, dleobjectderef_data d2 where d1.domainid=d2.objid and d1.dlesession=0 and not d1.deleted and d1.name='Application Control & URL Filtering Settings';" | grep SMC | cut -d "|" -f 1)''')
+time.sleep(2)
+rc.send('mgmt_cli -r true set generic-object uid $app_obj gwFailure false')
+time.sleep(10)
+rc.send('mgmt_cli -r true set generic-object uid $ObjectName urlfSslCnEnabled true')
+time.sleep(10)
+
 
 
 #Publish Rules
