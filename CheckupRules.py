@@ -104,10 +104,10 @@ rc.send("\n")
 time.sleep(10)
 rc.send('mgmt_cli -r true set package name "Standard" access-layers.add.1.name "APP&URLF" access-layers.add.1.position 2')
 rc.send("\n")
-time.sleep(4)
+time.sleep(10)
 rc.send('mgmt_cli -r true set access-rule name "Cleanup rule" layer "APP&URLF" action Accept destination Any source Any enabled true track none --format json ignore-warnings true')
 rc.send("\n")
-time.sleep(4)      
+time.sleep(10)      
 
 
 #Publish Rules
