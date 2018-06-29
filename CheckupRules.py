@@ -170,7 +170,7 @@ rc.send('mgmt_cli -r true set generic-object uid $am_uid radHoldMode "pass"')
 rc.send("\n")
 time.sleep(4)
         
-#Monitoring
+#Monitoring and logging
 rc.send('fw_uid=$(mgmt_cli -r true show simple-gateway name $fw_name --format json | $CPDIR/jq/jq ".uid")')
 rc.send("\n")
 time.sleep(4)
@@ -190,6 +190,9 @@ rc.send('mgmt_cli -r true set generic-object uid $fw_uid  logIndexer true --form
 rc.send("\n")
 time.sleep(4)
 rc.send('mgmt_cli -r true set generic-object uid $fw_uid  eventAnalyzer true --format json ignore-warnings true')
+rc.send("\n")
+time.sleep(4)
+rc.send('mgmt_cli -r true set generic-object uid $fw_uid abacusServer "true"')
 rc.send("\n")
 time.sleep(4)
 
