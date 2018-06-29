@@ -6,7 +6,7 @@ import time
 import paramiko
     
 #Get Variables
-print "Checkpoint Rule Configureation Script \n"
+print "Checkpoint Rule Configuration Script \n"
 print "In order for this script to work, the management API has to be enabled. \n"
 
 ip_address = raw_input("Enter Management IP: ")
@@ -145,7 +145,7 @@ rc.send('mgmt_cli -r true set generic-object uid $tp_uid avSettings.logCleanFile
 time.sleep(4)
 rc.send('''am_uid=$(mgmt_cli -r true show generic-objects name General_Settings -f json | $CPDIR/jq/jq '.["objects"][].uid')''')
 time.sleep(4)
-rc.send('mgmt_cli -r true set generic-object uid $am_uid radHoldMode "pass"
+rc.send('mgmt_cli -r true set generic-object uid $am_uid radHoldMode "pass" -s /home/admin/id.txt')
 time.sleep(4)
         
 #Monitoring
