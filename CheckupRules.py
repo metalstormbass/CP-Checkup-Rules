@@ -117,7 +117,7 @@ rc.send('''app_obj=$(psql_client cpm postgres -c "select d1.objid, d2.name from 
 time.sleep(6)
 rc.send('mgmt_cli -r true set generic-object uid $app_obj gwFailure false  -s /home/admin/id.txt')
 time.sleep(10)
-rc.send('mgmt_cli -r true set generic-object uid $ObjectName urlfSslCnEnabled true  -s /home/admin/id.txt')
+rc.send('mgmt_cli -r true set generic-object uid $app_obj urlfSslCnEnabled true  -s /home/admin/id.txt')
 time.sleep(6)
 
 #Threat Prevention Policy
@@ -143,7 +143,11 @@ rc.send('mgmt_cli -r true set generic-object uid $tp_uid avSettings.allFilesProa
 time.sleep(4)
 rc.send('mgmt_cli -r true set generic-object uid $tp_uid avSettings.logCleanFilesScanned "false" -s /home/admin/id.txt') 
 time.sleep(4)
-
+rc.send('''am_uid=$(mgmt_cli -r true show generic-objects name General_Settings -f json | $CPDIR/jq/jq '.["objects"][].uid')''')
+time.sleep(4)
+rc.send('mgmt_cli -r true set generic-object uid $am_uid radHoldMode "pass"
+time.sleep(4)
+        
 #Monitoring
 rc.send('fw_uid=$(mgmt_cli -r true show simple-gateway name $fw_name --format json | $CPDIR/jq/jq ".uid")')
 time.sleep(4)
