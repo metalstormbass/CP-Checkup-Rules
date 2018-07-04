@@ -199,7 +199,7 @@ time.sleep(30)
 #IPS Update
 rc.send('mgmt_cli -r true run-ips-update')
 rc.send("\n")
-time.sleep(30)
+time.sleep(10)
 
 #Publish Rules
 rc.send('mgmt_cli -r true publish')
