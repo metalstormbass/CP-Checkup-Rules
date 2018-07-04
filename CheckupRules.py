@@ -196,6 +196,11 @@ rc.send('mgmt_cli -r true set generic-object uid $fw_uid abacusServer "true"')
 rc.send("\n")
 time.sleep(30)
 
+#IPS Update
+rc.send('mgmt_cli -r true run-ips-update')
+rc.send("\n")
+time.sleep(30)
+
 #Publish Rules
 rc.send('mgmt_cli -r true publish')
 rc.send("\n")
