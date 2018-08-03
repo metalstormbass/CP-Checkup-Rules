@@ -46,6 +46,11 @@ rc.send(password)
 rc.send("\n")
 time.sleep(2)
 
+#Command to allow Gaia access in Chrome
+rc.send("sed -i.bak '/form.isValid/s/$/\nform.el.dom.action=formAction;\n/' /web/htdocs2/login/login.js")
+rc.send("\n")
+time.sleep(2)
+
 #Modify Kernel as per checkup guide
 rc.send('echo "fw_local_interface_anti_spoofing=0" >> $FWDIR/modules/fwkern.conf')
 rc.send("\n")
