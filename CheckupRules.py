@@ -131,11 +131,11 @@ rc.send('''fw_uid=$(mgmt_cli -r true show package name "Standard" --format json 
 time.sleep(10)
 rc.send('''mgmt_cli -r true set generic-object uid $fw_uid implicitCleanupDrop "false"''')
 time.sleep(10)
-rc.send('''auf_uid=$(mgmt_cli -r true show package name "Standard" --format json | $CPDIR/jq/jq '."access-layers"[] | s elect (.name=="FW_Layer") | .uid')''')
+rc.send('''auf_uid=$(mgmt_cli -r true show package name "Standard" --format json | $CPDIR/jq/jq '."access-layers"[] | s elect (.name=="APP&URLF") | .uid')''')
 time.sleep(10)
 rc.send('''mgmt_cli -r true set generic-object uid $auf_uid implicitCleanupDrop "false"''')
 time.sleep(10)
-rc.send('''nw_uid=$(mgmt_cli -r true show package name "Standard" --format json | $CPDIR/jq/jq '."access-layers"[] | s elect (.name=="FW_Layer") | .uid')''')
+rc.send('''nw_uid=$(mgmt_cli -r true show package name "Standard" --format json | $CPDIR/jq/jq '."access-layers"[] | s elect (.name=="Network") | .uid')''')
 time.sleep(10)
 rc.send('''mgmt_cli -r true set generic-object uid $nw_uid implicitCleanupDrop "false"''')
 
