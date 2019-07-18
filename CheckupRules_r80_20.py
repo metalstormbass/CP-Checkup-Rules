@@ -46,11 +46,6 @@ rc.send(password)
 rc.send("\n")
 time.sleep(2)
 
-#Command to allow Gaia access in Chrome
-rc.send("sed -i.bak '/form.isValid/s/$/\nform.el.dom.action=formAction;\n/' /web/htdocs2/login/login.js")
-rc.send("\n")
-time.sleep(2)
-
 #Modify Kernel as per checkup guide
 rc.send('echo "fw_local_interface_anti_spoofing=0" >> $FWDIR/modules/fwkern.conf')
 rc.send("\n")
@@ -92,28 +87,41 @@ rc.send('mgmt_cli -r true set access-rule name "Cleanup rule" layer "Network" ac
 rc.send("\n")
 time.sleep(2)
 
-#Create FW_Layer and Rule
-time.sleep(2)
-rc.send('mgmt_cli -r true add access-layer name "FW_Layer" firewall true')
-rc.send("\n")
-time.sleep(2)
-rc.send('mgmt_cli -r true  add access-rule layer "FW_Layer" position 1 name Accept_All action Accept destination Any source Any enabled true track none')
-rc.send("\n")
-time.sleep(10)
 
-#Create APP&URLF Rule
 
-rc.send('mgmt_cli -r true add access-rule layer "FW_Layer" position 2 name Content_Logging action Accept source Any destination Internet data "Any File" data-direction up track "detailed log" enabled true')
+#Create FW_Layer + APP&URLF (Inline)
+time.sleep(2)
+rc.send('mgmt_cli -r true add access-layer name "FW_Layer" applications-and-url-filtering true content-awareness true firewall true')
 rc.send("\n")
-time.sleep(12)
-rc.send('mgmt_cli -r true add access-rule layer "FW_Layer" position 3 name APPLC_Logging action Accept source Any destination Internet track "detailed log" enabled true')
+time.sleep(2)
+rc.send('mgmt_cli -r true add access-layer name "APP&URLF" applications-and-url-filtering true content-awareness true firewall true')
 rc.send("\n")
-time.sleep(10)
+time.sleep(2)
+
+
+#Add Rules to APP&URLF inline layer
+rc.send('mgmt_cli -r true add access-rule layer "APP&URLF" position 1 name Content_Logging action Accept source Any destination Internet data "Any File" data-direction up track "detailed log" enabled true')
 rc.send("\n")
-time.sleep(10)
-rc.send('mgmt_cli -r true delete access-rule name "Cleanup rule" layer "FW_Layer" position 4')
+time.sleep(5)
+rc.send('mgmt_cli -r true add access-rule layer "APP&URLF" position 2 name APPLC_Logging action Accept source Any destination Internet track "detailed log" enabled true')
 rc.send("\n")
-time.sleep(10)
+time.sleep(5)
+rc.send("\n")
+time.sleep(5)
+rc.send('mgmt_cli -r true set access-rule name "Cleanup rule" layer "APP&URLF" action Accept destination Any source Any enabled true track none --format json ignore-warnings true')
+rc.send("\n")
+time.sleep(5)
+
+
+#Create FW_Layer Rule and point to APP&URLF Inline Layer
+rc.send('mgmt_cli -r true add access-rule layer "FW_Layer" position 1 name APP action "Apply Layer" inline-layer "APP&URLF" source Any destination Internet track "none" enabled true')
+rc.send("\n")
+time.sleep(5)
+rc.send('mgmt_cli -r true set access-rule name "Cleanup rule" layer "FW_Layer" action Accept destination Any source Any enabled true track none --format json ignore-warnings true')
+rc.send("\n")
+time.sleep(5)
+
+#Add Layer to Policy
 rc.send('mgmt_cli -r true set package name ' + policy_name + ' access-layers.add.1.name "FW_Layer" access-layers.add.1.position 1  ')
 rc.send("\n") 
 time.sleep(2)
